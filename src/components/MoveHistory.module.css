@@ -1,0 +1,110 @@
+.panel {
+  background: #181825;
+  border-radius: 16px;
+  padding: 20px 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  max-width: 260px;
+  max-height: 500px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #313244 transparent;
+}
+
+.panel::-webkit-scrollbar {
+  width: 4px;
+}
+.panel::-webkit-scrollbar-thumb {
+  background: #313244;
+  border-radius: 4px;
+}
+
+.title {
+  text-align: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #6c7086;
+  margin: 0 0 4px 0;
+}
+
+.hint {
+  text-align: center;
+  font-size: 0.7rem;
+  color: #45475a;
+  margin: 0 0 14px 0;
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.item {
+  width: 100%;
+}
+
+.btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: #1e1e2e;
+  border: 1px solid #313244;
+  color: #cdd6f4;
+  cursor: pointer;
+  font-size: 0.78rem;
+  text-align: left;
+  transition: background 0.15s ease, border-color 0.15s ease;
+  position: relative;
+}
+
+.btn:hover {
+  background: #2a2a3e;
+  border-color: #7c7caa;
+}
+
+.active {
+  background: #2d2d44 !important;
+  border-color: #cba6f7 !important;
+  color: #cba6f7;
+}
+
+.stepNum {
+  font-size: 0.7rem;
+  font-weight: 700;
+  background: #313244;
+  color: #6c7086;
+  border-radius: 4px;
+  padding: 1px 6px;
+  min-width: 22px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.active .stepNum {
+  background: #45475a;
+  color: #cba6f7;
+}
+
+.desc {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #cba6f7;
+  flex-shrink: 0;
+}

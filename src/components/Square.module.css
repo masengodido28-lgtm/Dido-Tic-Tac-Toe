@@ -1,0 +1,85 @@
+.square {
+  width: 100px;
+  height: 100px;
+  background: #1e1e2e;
+  border: 2px solid #313244;
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease, transform 0.1s ease, border-color 0.15s ease;
+  outline: none;
+  padding: 0;
+}
+
+.square:not(.disabled):not(:disabled):hover {
+  background: #2a2a3e;
+  border-color: #7c7caa;
+  transform: scale(1.04);
+}
+
+.square:active:not(.disabled) {
+  transform: scale(0.97);
+}
+
+.mark {
+  font-size: 2.4rem;
+  font-weight: 800;
+  line-height: 1;
+  user-select: none;
+  animation: pop 0.18s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.x .mark {
+  color: #f38ba8;
+}
+
+.o .mark {
+  color: #89dceb;
+}
+
+.winning {
+  background: #2d2d44 !important;
+  border-color: #a6e3a1 !important;
+  box-shadow: 0 0 16px 2px #a6e3a155;
+}
+
+.winning .mark {
+  color: #a6e3a1 !important;
+}
+
+.disabled {
+  cursor: not-allowed;
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@media (max-width: 480px) {
+  .square {
+    width: 80px;
+    height: 80px;
+  }
+  .mark {
+    font-size: 1.9rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .square {
+    width: 68px;
+    height: 68px;
+  }
+  .mark {
+    font-size: 1.6rem;
+  }
+}
