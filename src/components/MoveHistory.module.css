@@ -1,38 +1,37 @@
 .panel {
-  background: #181825;
+  background: var(--bg-base);
+  border: 1px solid var(--border);
   border-radius: 16px;
   padding: 20px 16px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
   width: 100%;
   max-width: 260px;
   max-height: 500px;
   overflow-y: auto;
   scrollbar-width: thin;
-  scrollbar-color: #313244 transparent;
+  scrollbar-color: var(--border-mid) transparent;
 }
 
-.panel::-webkit-scrollbar {
-  width: 4px;
-}
+.panel::-webkit-scrollbar { width: 4px; }
 .panel::-webkit-scrollbar-thumb {
-  background: #313244;
+  background: var(--border-mid);
   border-radius: 4px;
 }
 
 .title {
   text-align: center;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-weight: 700;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: #6c7086;
+  color: var(--muted);
   margin: 0 0 4px 0;
 }
 
 .hint {
   text-align: center;
-  font-size: 0.7rem;
-  color: #45475a;
+  font-size: 0.68rem;
+  color: var(--muted);
   margin: 0 0 14px 0;
 }
 
@@ -45,9 +44,7 @@
   gap: 6px;
 }
 
-.item {
-  width: 100%;
-}
+.item { width: 100%; }
 
 .btn {
   width: 100%;
@@ -56,32 +53,31 @@
   gap: 8px;
   padding: 8px 10px;
   border-radius: 8px;
-  background: #1e1e2e;
-  border: 1px solid #313244;
-  color: #cdd6f4;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  color: var(--text);
   cursor: pointer;
   font-size: 0.78rem;
   text-align: left;
   transition: background 0.15s ease, border-color 0.15s ease;
-  position: relative;
 }
 
 .btn:hover {
-  background: #2a2a3e;
-  border-color: #7c7caa;
+  background: var(--bg-raised);
+  border-color: var(--border-mid);
 }
 
 .active {
-  background: #2d2d44 !important;
-  border-color: #cba6f7 !important;
-  color: #cba6f7;
+  background: var(--bg-raised) !important;
+  border-color: var(--accent) !important;
+  color: var(--x-color);
 }
 
 .stepNum {
   font-size: 0.7rem;
   font-weight: 700;
-  background: #313244;
-  color: #6c7086;
+  background: var(--bg-raised);
+  color: var(--muted);
   border-radius: 4px;
   padding: 1px 6px;
   min-width: 22px;
@@ -90,8 +86,7 @@
 }
 
 .active .stepNum {
-  background: #45475a;
-  color: #cba6f7;
+  color: var(--x-color);
 }
 
 .desc {
@@ -105,6 +100,6 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #cba6f7;
+  background: var(--accent);
   flex-shrink: 0;
 }

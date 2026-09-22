@@ -1,20 +1,28 @@
 import { calculateDraw, calculateWinner } from './logic'
-import type { GameAction, GameState, HistoryEntry } from './types'
+import type { GameAction, GameState, HistoryEntry, Player } from './types'
 
-const EMPTY_BOARD = Array(9).fill(null)
-
-const INITIAL_HISTORY: HistoryEntry[] = [
-  { board: EMPTY_BOARD, currentPlayer: 'X', moveIndex: -1, movePlayer: null },
-]
+function makeInitialHistory(startingPlayer: Player): HistoryEntry[] {
+  return [
+    {
+      board: Array(9).fill(null),
+      currentPlayer: startingPlayer,
+      moveIndex: -1,
+      movePlayer: null,
+    },
+  ]
+}
 
 export const initialState: GameState = {
-  board: EMPTY_BOARD,
+  board: Array(9).fill(null),
   currentPlayer: 'X',
   winner: null,
   isDraw: false,
-  history: INITIAL_HISTORY,
+  history: makeInitialHistory('X'),
   stepIndex: 0,
   score: { X: 0, O: 0, draws: 0 },
+  mode: 'pvp',
+  cpuPlayer: 'O',
+  nextStartingPlayer: 'O', // after first game, O starts next
 }
 
 export function gameReducer(state: GameState, action: GameAction): GameState {
@@ -22,7 +30,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
     case 'MAKE_MOVE': {
       const { index } = action
 
-      // If we're viewing a past step, trim history to that point first
+      // Trim history to current view point
       const activeHistory = state.history.slice(0, state.stepIndex + 1)
       const currentEntry = activeHistory[activeHistory.length - 1]
       const { board, currentPlayer } = currentEntry
@@ -37,7 +45,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
 
       const winner = calculateWinner(nextBoard)
       const isDraw = !winner && calculateDraw(nextBoard)
-      const nextPlayer = currentPlayer === 'X' ? 'O' : 'X'
+      const nextPlayer: Player = currentPlayer === 'X' ? 'O' : 'X'
 
       const newEntry: HistoryEntry = {
         board: nextBoard,
@@ -81,10 +89,30 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
     }
 
     case 'RESET': {
+      // Who starts this new game
+      const startingPlayer = state.nextStartingPlayer
+      // Next game the other player starts
+      const nextStartingPlayer: Player = startingPlayer === 'X' ? 'O' : 'X'
+
+      return {
+        ...state,
+        board: Array(9).fill(null),
+        currentPlayer: startingPlayer,
+        winner: null,
+        isDraw: false,
+        history: makeInitialHistory(startingPlayer),
+        stepIndex: 0,
+        // score persists
+        nextStartingPlayer,
+      }
+    }
+
+    case 'SET_MODE': {
+      // Changing mode starts a fresh game, score resets
       return {
         ...initialState,
-        // preserve the score across resets
-        score: state.score,
+        mode: action.mode,
+        score: { X: 0, O: 0, draws: 0 },
       }
     }
 

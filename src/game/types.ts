@@ -1,6 +1,7 @@
 export type Player = 'X' | 'O'
 export type Cell = Player | null
 export type Board = Cell[]
+export type GameMode = 'pvp' | 'cpu'
 
 export interface Score {
   X: number
@@ -23,12 +24,19 @@ export interface GameState {
   isDraw: boolean
   /** Full history of snapshots for time-travel */
   history: HistoryEntry[]
-  /** Index into history we're currently viewing (null = latest) */
+  /** Index into history we're currently viewing */
   stepIndex: number
   score: Score
+  /** vs another player or vs CPU */
+  mode: GameMode
+  /** CPU always plays as O */
+  cpuPlayer: Player
+  /** Tracks whose turn it is to start next game (alternates each reset) */
+  nextStartingPlayer: Player
 }
 
 export type GameAction =
   | { type: 'MAKE_MOVE'; index: number }
   | { type: 'RESET' }
   | { type: 'JUMP_TO'; step: number }
+  | { type: 'SET_MODE'; mode: GameMode }

@@ -1,4 +1,4 @@
-import type { Player } from '../game/types'
+import type { GameMode, Player } from '../game/types'
 import styles from './StatusBar.module.css'
 
 interface StatusBarProps {
@@ -7,6 +7,9 @@ interface StatusBarProps {
   currentPlayer: Player
   isViewingHistory: boolean
   viewingStep: number
+  mode: GameMode
+  cpuPlayer: Player
+  isCpuThinking: boolean
 }
 
 export default function StatusBar({
@@ -15,22 +18,47 @@ export default function StatusBar({
   currentPlayer,
   isViewingHistory,
   viewingStep,
+  mode,
+  cpuPlayer,
+  isCpuThinking,
 }: StatusBarProps) {
   let message: string
-  let variant: 'neutral' | 'win' | 'draw' | 'history' = 'neutral'
+  let variant: 'neutral' | 'win' | 'draw' | 'history' | 'cpu' = 'neutral'
 
   if (isViewingHistory) {
     message = viewingStep === 0 ? 'Game start' : `Viewing move #${viewingStep}`
     variant = 'history'
   } else if (winner) {
-    message = `Winner: ${winner}`
+    const label =
+      mode === 'cpu'
+        ? winner === cpuPlayer
+          ? 'CPU wins! 🤖'
+          : 'You win! 🎉'
+        : `Winner: ${winner}`
+    message = label
     variant = 'win'
   } else if (isDraw) {
-    message = "It's a Draw!"
+    message = "It's a Draw! 🤝"
     variant = 'draw'
+  } else if (isCpuThinking) {
+    message = 'CPU is thinking…'
+    variant = 'cpu'
   } else {
-    message = `Next Player: ${currentPlayer}`
+    const isCpuTurn = mode === 'cpu' && currentPlayer === cpuPlayer
+    message = isCpuTurn ? `CPU's turn (${cpuPlayer})` : `Next: ${currentPlayer}`
   }
+
+  const icon = winner
+    ? winner === 'X' ? '🟢' : '🩷'
+    : isDraw
+    ? '🤝'
+    : isViewingHistory
+    ? '⏪'
+    : isCpuThinking
+    ? '⌛'
+    : currentPlayer === 'X'
+    ? '🟢'
+    : '🩷'
 
   return (
     <div
@@ -38,9 +66,7 @@ export default function StatusBar({
       role="status"
       aria-live="polite"
     >
-      <span className={styles.indicator} aria-hidden="true">
-        {winner ? (winner === 'X' ? '🔴' : '🔵') : isDraw ? '🤝' : isViewingHistory ? '⏪' : currentPlayer === 'X' ? '🔴' : '🔵'}
-      </span>
+      <span className={styles.indicator} aria-hidden="true">{icon}</span>
       <span>{message}</span>
     </div>
   )

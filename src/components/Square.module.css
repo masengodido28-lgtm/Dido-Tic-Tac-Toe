@@ -1,8 +1,8 @@
 .square {
   width: 100px;
   height: 100px;
-  background: #1e1e2e;
-  border: 2px solid #313244;
+  background: var(--bg-surface);
+  border: 2px solid var(--border);
   border-radius: 12px;
   cursor: pointer;
   display: flex;
@@ -14,9 +14,9 @@
 }
 
 .square:not(.disabled):not(:disabled):hover {
-  background: #2a2a3e;
-  border-color: #7c7caa;
-  transform: scale(1.04);
+  background: var(--bg-raised);
+  border-color: var(--border-mid);
+  transform: scale(1.05);
 }
 
 .square:active:not(.disabled) {
@@ -25,28 +25,33 @@
 
 .mark {
   font-size: 2.4rem;
-  font-weight: 800;
+  font-weight: 900;
   line-height: 1;
   user-select: none;
   animation: pop 0.18s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
+/* X = green */
 .x .mark {
-  color: #f38ba8;
+  color: var(--x-color);
+  text-shadow: 0 0 12px rgba(74, 222, 128, 0.4);
 }
 
+/* O = pink */
 .o .mark {
-  color: #89dceb;
+  color: var(--o-color);
+  text-shadow: 0 0 12px rgba(244, 114, 182, 0.4);
 }
 
 .winning {
-  background: #2d2d44 !important;
-  border-color: #a6e3a1 !important;
-  box-shadow: 0 0 16px 2px #a6e3a155;
+  background: #0d2e16 !important;
+  border-color: var(--win-color) !important;
+  box-shadow: 0 0 20px 2px rgba(134, 239, 172, 0.35);
 }
 
 .winning .mark {
-  color: #a6e3a1 !important;
+  color: var(--win-color) !important;
+  text-shadow: 0 0 16px rgba(134, 239, 172, 0.6) !important;
 }
 
 .disabled {
@@ -54,32 +59,16 @@
 }
 
 @keyframes pop {
-  0% {
-    transform: scale(0.5);
-    opacity: 0;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
+  0%   { transform: scale(0.4); opacity: 0; }
+  100% { transform: scale(1);   opacity: 1; }
 }
 
 @media (max-width: 480px) {
-  .square {
-    width: 80px;
-    height: 80px;
-  }
-  .mark {
-    font-size: 1.9rem;
-  }
+  .square { width: 80px; height: 80px; }
+  .mark   { font-size: 1.9rem; }
 }
 
 @media (max-width: 360px) {
-  .square {
-    width: 68px;
-    height: 68px;
-  }
-  .mark {
-    font-size: 1.6rem;
-  }
+  .square { width: 68px; height: 68px; }
+  .mark   { font-size: 1.6rem; }
 }

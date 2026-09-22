@@ -1,19 +1,20 @@
 .scoreboard {
-  background: #181825;
+  background: var(--bg-base);
+  border: 1px solid var(--border);
   border-radius: 16px;
   padding: 20px 24px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
   width: 100%;
   max-width: 360px;
 }
 
 .title {
   text-align: center;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-weight: 700;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: #6c7086;
+  color: var(--muted);
   margin: 0 0 16px 0;
 }
 
@@ -31,13 +32,14 @@
   flex: 1;
   padding: 12px 8px;
   border-radius: 12px;
-  background: #1e1e2e;
-  border: 1px solid #313244;
-  transition: transform 0.15s ease;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  transition: transform 0.15s ease, border-color 0.15s ease;
 }
 
 .scoreCard:hover {
   transform: translateY(-2px);
+  border-color: var(--border-mid);
 }
 
 .player {
@@ -53,23 +55,25 @@
 }
 
 .label {
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #6c7086;
+  color: var(--muted);
 }
 
+/* X = green */
 .x .player,
 .x .value {
-  color: #f38ba8;
+  color: var(--x-color);
 }
 
+/* O = pink */
 .o .player,
 .o .value {
-  color: #89dceb;
+  color: var(--o-color);
 }
 
 .draws .value {
-  color: #f9e2af;
+  color: var(--draw-color);
 }
