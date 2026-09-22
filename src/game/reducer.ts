@@ -129,6 +129,14 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       }
     }
 
+    // FULL_RESET: wipe score + board, start fresh from X
+    case 'FULL_RESET': {
+      return {
+        ...initialState,
+        mode: state.mode,
+      }
+    }
+
     default:
       return state
   }

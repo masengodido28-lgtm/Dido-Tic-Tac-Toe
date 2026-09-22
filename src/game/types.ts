@@ -41,5 +41,6 @@ export type GameAction =
   | { type: 'MAKE_MOVE'; index: number }
   | { type: 'RESET' }
   | { type: 'RESTART' }
+  | { type: 'FULL_RESET' }
   | { type: 'JUMP_TO'; step: number }
   | { type: 'SET_MODE'; mode: GameMode }

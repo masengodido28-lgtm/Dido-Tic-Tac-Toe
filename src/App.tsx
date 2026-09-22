@@ -1,5 +1,5 @@
 import { useEffect, useReducer, useRef, useState } from 'react'
-import { Play, RotateCcw, RefreshCw } from 'lucide-react'
+import { Play, RotateCcw, RefreshCw, Trash2 } from 'lucide-react'
 import Board from './components/Board'
 import StatusBar from './components/StatusBar'
 import Scoreboard from './components/Scoreboard'
@@ -83,6 +83,11 @@ export default function App() {
   function handleNewGame() {
     clearCpuTimer()
     dispatch({ type: 'RESET' })
+  }
+
+  function handleFullReset() {
+    clearCpuTimer()
+    dispatch({ type: 'FULL_RESET' })
   }
 
   function handleJumpTo(step: number) {
@@ -175,6 +180,14 @@ export default function App() {
             >
               <RefreshCw size={15} strokeWidth={2.5} />
               New Game
+            </button>
+            <button
+              className={[styles.btn, styles.btnFullReset].join(' ')}
+              onClick={handleFullReset}
+              title="Reset score and restart from scratch"
+            >
+              <Trash2 size={15} strokeWidth={2.5} />
+              Reset Score
             </button>
           </div>
         </section>
