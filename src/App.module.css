@@ -96,6 +96,9 @@
 }
 
 .btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
   padding: 10px 22px;
   border-radius: 50px;
   border: 2px solid transparent;

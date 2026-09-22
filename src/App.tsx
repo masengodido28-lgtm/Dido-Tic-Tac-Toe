@@ -1,4 +1,5 @@
 import { useEffect, useReducer, useRef, useState } from 'react'
+import { Play, RotateCcw, RefreshCw } from 'lucide-react'
 import Board from './components/Board'
 import StatusBar from './components/StatusBar'
 import Scoreboard from './components/Scoreboard'
@@ -155,7 +156,8 @@ export default function App() {
                 className={[styles.btn, styles.btnResume].join(' ')}
                 onClick={() => handleJumpTo(history.length - 1)}
               >
-                ▶ Resume
+                <Play size={15} strokeWidth={2.5} />
+                Resume
               </button>
             )}
             <button
@@ -163,14 +165,16 @@ export default function App() {
               onClick={handleRestart}
               title="Restart this game (same starting player, score kept)"
             >
-              ↺ Restart
+              <RotateCcw size={15} strokeWidth={2.5} />
+              Restart
             </button>
             <button
               className={[styles.btn, styles.btnNewGame].join(' ')}
               onClick={handleNewGame}
               title="New game (starting player alternates)"
             >
-              🔄 New Game
+              <RefreshCw size={15} strokeWidth={2.5} />
+              New Game
             </button>
           </div>
         </section>

@@ -8,6 +8,9 @@
 }
 
 .btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   padding: 8px 22px;
   border-radius: 50px;
   border: none;

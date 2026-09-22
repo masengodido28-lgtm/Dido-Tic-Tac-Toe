@@ -1,3 +1,4 @@
+import { Rewind } from 'lucide-react'
 import type { HistoryEntry } from '../game/types'
 import styles from './MoveHistory.module.css'
 
@@ -21,7 +22,10 @@ export default function MoveHistory({ history, currentStep, onJumpTo }: MoveHist
   return (
     <div className={styles.panel} role="region" aria-label="Move history">
       <h2 className={styles.title}>Move History</h2>
-      <p className={styles.hint}>Click any move to time-travel ⏪</p>
+      <p className={styles.hint}>
+        <Rewind size={11} strokeWidth={2} />
+        Click any move to time-travel
+      </p>
       <ol className={styles.list}>
         {history.map((entry, step) => {
           const isActive = step === currentStep

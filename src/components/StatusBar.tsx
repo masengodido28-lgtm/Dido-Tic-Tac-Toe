@@ -1,3 +1,4 @@
+import { Trophy, Minus, History, Loader, Circle } from 'lucide-react'
 import type { GameMode, Player } from '../game/types'
 import styles from './StatusBar.module.css'
 
@@ -32,13 +33,13 @@ export default function StatusBar({
     const label =
       mode === 'cpu'
         ? winner === cpuPlayer
-          ? 'CPU wins! 🤖'
-          : 'You win! 🎉'
+          ? 'CPU wins!'
+          : 'You win!'
         : `Winner: ${winner}`
     message = label
     variant = 'win'
   } else if (isDraw) {
-    message = "It's a Draw! 🤝"
+    message = "It's a Draw!"
     variant = 'draw'
   } else if (isCpuThinking) {
     message = 'CPU is thinking…'
@@ -48,17 +49,16 @@ export default function StatusBar({
     message = isCpuTurn ? `CPU's turn (${cpuPlayer})` : `Next: ${currentPlayer}`
   }
 
-  const icon = winner
-    ? winner === 'X' ? '🟢' : '🩷'
-    : isDraw
-    ? '🤝'
-    : isViewingHistory
-    ? '⏪'
-    : isCpuThinking
-    ? '⌛'
-    : currentPlayer === 'X'
-    ? '🟢'
-    : '🩷'
+  // Pick the right icon for each state
+  function renderIcon() {
+    if (winner) return <Trophy size={18} strokeWidth={2.5} />
+    if (isDraw) return <Minus size={18} strokeWidth={2.5} />
+    if (isViewingHistory) return <History size={18} strokeWidth={2} />
+    if (isCpuThinking) return <Loader size={18} strokeWidth={2} className={styles.spin} />
+    // Colored dot matching current player
+    const color = currentPlayer === 'X' ? 'var(--x-color)' : 'var(--o-color)'
+    return <Circle size={12} fill={color} stroke={color} />
+  }
 
   return (
     <div
@@ -66,7 +66,9 @@ export default function StatusBar({
       role="status"
       aria-live="polite"
     >
-      <span className={styles.indicator} aria-hidden="true">{icon}</span>
+      <span className={styles.indicator} aria-hidden="true">
+        {renderIcon()}
+      </span>
       <span>{message}</span>
     </div>
   )

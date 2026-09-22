@@ -1,3 +1,4 @@
+import { Minus } from 'lucide-react'
 import type { Score } from '../game/types'
 import styles from './Scoreboard.module.css'
 
@@ -16,7 +17,9 @@ export default function Scoreboard({ score }: ScoreboardProps) {
           <span className={styles.label}>Wins</span>
         </div>
         <div className={[styles.scoreCard, styles.draws].join(' ')}>
-          <span className={styles.player}>🤝</span>
+          <span className={styles.player}>
+            <Minus size={22} strokeWidth={3} />
+          </span>
           <span className={styles.value}>{score.draws}</span>
           <span className={styles.label}>Draws</span>
         </div>

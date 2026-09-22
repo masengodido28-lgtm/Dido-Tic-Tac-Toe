@@ -29,7 +29,10 @@
 }
 
 .hint {
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
   font-size: 0.68rem;
   color: var(--muted);
   margin: 0 0 14px 0;

@@ -1,3 +1,4 @@
+import { Users, Bot } from 'lucide-react'
 import type { GameMode } from '../game/types'
 import styles from './ModeSelector.module.css'
 
@@ -14,14 +15,16 @@ export default function ModeSelector({ mode, onChange }: ModeSelectorProps) {
         onClick={() => onChange('pvp')}
         aria-pressed={mode === 'pvp'}
       >
-        👥 2 Players
+        <Users size={15} strokeWidth={2.5} />
+        2 Players
       </button>
       <button
         className={[styles.btn, mode === 'cpu' ? styles.active : ''].join(' ')}
         onClick={() => onChange('cpu')}
         aria-pressed={mode === 'cpu'}
       >
-        🤖 vs CPU
+        <Bot size={15} strokeWidth={2.5} />
+        vs CPU
       </button>
     </div>
   )
