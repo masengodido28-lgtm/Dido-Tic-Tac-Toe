@@ -23,6 +23,7 @@ export const initialState: GameState = {
   mode: 'pvp',
   cpuPlayer: 'O',
   nextStartingPlayer: 'O', // after first game, O starts next
+  currentStartingPlayer: 'X',
 }
 
 export function gameReducer(state: GameState, action: GameAction): GameState {
@@ -30,12 +31,10 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
     case 'MAKE_MOVE': {
       const { index } = action
 
-      // Trim history to current view point
       const activeHistory = state.history.slice(0, state.stepIndex + 1)
       const currentEntry = activeHistory[activeHistory.length - 1]
       const { board, currentPlayer } = currentEntry
 
-      // Ignore if game over or cell already filled
       if (state.winner || state.isDraw || board[index] !== null) {
         return state
       }
@@ -88,10 +87,9 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       }
     }
 
+    // RESET: alternates starting player, keeps score
     case 'RESET': {
-      // Who starts this new game
       const startingPlayer = state.nextStartingPlayer
-      // Next game the other player starts
       const nextStartingPlayer: Player = startingPlayer === 'X' ? 'O' : 'X'
 
       return {
@@ -102,13 +100,28 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         isDraw: false,
         history: makeInitialHistory(startingPlayer),
         stepIndex: 0,
-        // score persists
         nextStartingPlayer,
+        currentStartingPlayer: startingPlayer,
+      }
+    }
+
+    // RESTART: same starting player as this game, score untouched
+    case 'RESTART': {
+      const startingPlayer = state.currentStartingPlayer
+
+      return {
+        ...state,
+        board: Array(9).fill(null),
+        currentPlayer: startingPlayer,
+        winner: null,
+        isDraw: false,
+        history: makeInitialHistory(startingPlayer),
+        stepIndex: 0,
+        // nextStartingPlayer unchanged — New Game still alternates normally after
       }
     }
 
     case 'SET_MODE': {
-      // Changing mode starts a fresh game, score resets
       return {
         ...initialState,
         mode: action.mode,

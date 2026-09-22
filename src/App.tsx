@@ -4,18 +4,20 @@ import StatusBar from './components/StatusBar'
 import Scoreboard from './components/Scoreboard'
 import MoveHistory from './components/MoveHistory'
 import ModeSelector from './components/ModeSelector'
+import ThemePicker, { THEMES } from './components/ThemePicker'
+import type { XOTheme } from './components/ThemePicker'
 import { gameReducer, initialState } from './game/reducer'
 import { getWinningLine } from './game/logic'
 import { getBestMove } from './game/ai'
 import type { GameMode } from './game/types'
 import styles from './App.module.css'
 
-// Delay before CPU plays (ms) — feels more natural
 const CPU_DELAY = 450
 
 export default function App() {
   const [state, dispatch] = useReducer(gameReducer, initialState)
   const [isCpuThinking, setIsCpuThinking] = useState(false)
+  const [theme, setTheme] = useState<XOTheme>(THEMES[0])
 
   const {
     board,
@@ -33,58 +35,62 @@ export default function App() {
   const winningLine = getWinningLine(board)
   const gameOver = winner !== null || isDraw
   const isViewingHistory = stepIndex < history.length - 1
-
-  // Track whether a CPU move is already scheduled to avoid double-firing
   const cpuTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  // CPU auto-move effect
+  // Apply theme colors as CSS custom properties on #root
   useEffect(() => {
-    // Only trigger when: cpu mode, cpu's turn, game not over, viewing latest
+    const root = document.getElementById('root')
+    if (!root) return
+    root.style.setProperty('--x-color', theme.xColor)
+    root.style.setProperty('--o-color', theme.oColor)
+  }, [theme])
+
+  // CPU auto-move
+  useEffect(() => {
     if (
       mode !== 'cpu' ||
       currentPlayer !== cpuPlayer ||
       gameOver ||
       isViewingHistory
-    ) {
-      return
-    }
+    ) return
 
     setIsCpuThinking(true)
-
     cpuTimerRef.current = setTimeout(() => {
       const move = getBestMove(board.slice(), cpuPlayer)
-      if (move !== -1) {
-        dispatch({ type: 'MAKE_MOVE', index: move })
-      }
+      if (move !== -1) dispatch({ type: 'MAKE_MOVE', index: move })
       setIsCpuThinking(false)
     }, CPU_DELAY)
 
-    return () => {
-      if (cpuTimerRef.current) clearTimeout(cpuTimerRef.current)
-    }
+    return () => { if (cpuTimerRef.current) clearTimeout(cpuTimerRef.current) }
   }, [board, currentPlayer, mode, cpuPlayer, gameOver, isViewingHistory])
 
+  function clearCpuTimer() {
+    setIsCpuThinking(false)
+    if (cpuTimerRef.current) clearTimeout(cpuTimerRef.current)
+  }
+
   function handleSquareClick(index: number) {
-    // Block human clicks when CPU is thinking or it's CPU's turn
     if (mode === 'cpu' && currentPlayer === cpuPlayer && !isViewingHistory) return
     dispatch({ type: 'MAKE_MOVE', index })
   }
 
-  function handleReset() {
-    setIsCpuThinking(false)
-    if (cpuTimerRef.current) clearTimeout(cpuTimerRef.current)
+  function handleRestart() {
+    clearCpuTimer()
+    dispatch({ type: 'RESTART' })
+  }
+
+  function handleNewGame() {
+    clearCpuTimer()
     dispatch({ type: 'RESET' })
   }
 
   function handleJumpTo(step: number) {
-    setIsCpuThinking(false)
-    if (cpuTimerRef.current) clearTimeout(cpuTimerRef.current)
+    clearCpuTimer()
     dispatch({ type: 'JUMP_TO', step })
   }
 
   function handleModeChange(newMode: GameMode) {
-    setIsCpuThinking(false)
-    if (cpuTimerRef.current) clearTimeout(cpuTimerRef.current)
+    clearCpuTimer()
     dispatch({ type: 'SET_MODE', mode: newMode })
   }
 
@@ -98,7 +104,12 @@ export default function App() {
           <span className={styles.titleO}>O</span>
         </h1>
         <p className={styles.subtitle}>Tic Tac Toe</p>
-        <ModeSelector mode={mode} onChange={handleModeChange} />
+
+        <div className={styles.controls}>
+          <ModeSelector mode={mode} onChange={handleModeChange} />
+          <ThemePicker activeId={theme.id} onChange={setTheme} />
+        </div>
+
         <p className={styles.startInfo}>
           Next game starts: <strong>{nextStartingPlayer}</strong>
         </p>
@@ -131,7 +142,10 @@ export default function App() {
           <Board
             board={board}
             winningLine={winningLine}
-            gameOver={(gameOver && !isViewingHistory) || (mode === 'cpu' && currentPlayer === cpuPlayer && !gameOver && !isViewingHistory)}
+            gameOver={
+              (gameOver && !isViewingHistory) ||
+              (mode === 'cpu' && currentPlayer === cpuPlayer && !gameOver && !isViewingHistory)
+            }
             onSquareClick={handleSquareClick}
           />
 
@@ -141,12 +155,20 @@ export default function App() {
                 className={[styles.btn, styles.btnResume].join(' ')}
                 onClick={() => handleJumpTo(history.length - 1)}
               >
-                ▶ Resume Latest
+                ▶ Resume
               </button>
             )}
             <button
-              className={[styles.btn, styles.btnReset].join(' ')}
-              onClick={handleReset}
+              className={[styles.btn, styles.btnRestart].join(' ')}
+              onClick={handleRestart}
+              title="Restart this game (same starting player, score kept)"
+            >
+              ↺ Restart
+            </button>
+            <button
+              className={[styles.btn, styles.btnNewGame].join(' ')}
+              onClick={handleNewGame}
+              title="New game (starting player alternates)"
             >
               🔄 New Game
             </button>

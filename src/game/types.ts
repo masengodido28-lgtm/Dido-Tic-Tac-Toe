@@ -33,10 +33,13 @@ export interface GameState {
   cpuPlayer: Player
   /** Tracks whose turn it is to start next game (alternates each reset) */
   nextStartingPlayer: Player
+  /** Who started the current game (used by RESTART to replay same start) */
+  currentStartingPlayer: Player
 }
 
 export type GameAction =
   | { type: 'MAKE_MOVE'; index: number }
   | { type: 'RESET' }
+  | { type: 'RESTART' }
   | { type: 'JUMP_TO'; step: number }
   | { type: 'SET_MODE'; mode: GameMode }

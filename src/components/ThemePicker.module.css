@@ -1,0 +1,68 @@
+.picker {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  padding: 6px 14px;
+}
+
+.label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.swatches {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.swatch {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  width: 38px;
+  height: 28px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg-raised);
+  cursor: pointer;
+  font-size: 0.65rem;
+  font-weight: 900;
+  line-height: 1;
+  transition: transform 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
+  padding: 0;
+}
+
+.swatch:hover {
+  transform: scale(1.12);
+  border-color: var(--border-mid);
+}
+
+.swatch.active {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent);
+  transform: scale(1.08);
+}
+
+.half {
+  font-size: 0.7rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+@media (max-width: 480px) {
+  .picker {
+    flex-direction: column;
+    border-radius: 14px;
+    gap: 6px;
+    padding: 8px 12px;
+  }
+}
