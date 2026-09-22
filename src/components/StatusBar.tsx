@@ -30,13 +30,12 @@ export default function StatusBar({
     message = viewingStep === 0 ? 'Game start' : `Viewing move #${viewingStep}`
     variant = 'history'
   } else if (winner) {
-    const label =
+    message =
       mode === 'cpu'
         ? winner === cpuPlayer
           ? 'CPU wins!'
           : 'You win!'
         : `Winner: ${winner}`
-    message = label
     variant = 'win'
   } else if (isDraw) {
     message = "It's a Draw!"
@@ -49,13 +48,11 @@ export default function StatusBar({
     message = isCpuTurn ? `CPU's turn (${cpuPlayer})` : `Next: ${currentPlayer}`
   }
 
-  // Pick the right icon for each state
   function renderIcon() {
     if (winner) return <Trophy size={18} strokeWidth={2.5} />
     if (isDraw) return <Minus size={18} strokeWidth={2.5} />
     if (isViewingHistory) return <History size={18} strokeWidth={2} />
     if (isCpuThinking) return <Loader size={18} strokeWidth={2} className={styles.spin} />
-    // Colored dot matching current player
     const color = currentPlayer === 'X' ? 'var(--x-color)' : 'var(--o-color)'
     return <Circle size={12} fill={color} stroke={color} />
   }
