@@ -1,4 +1,4 @@
-import { Trophy, Minus, History, Loader, Circle } from 'lucide-react'
+import { Trophy, Minus, History, Loader, Circle, Crown } from 'lucide-react'
 import type { GameMode, Player } from '../game/types'
 import styles from './StatusBar.module.css'
 
@@ -11,6 +11,8 @@ interface StatusBarProps {
   mode: GameMode
   cpuPlayer: Player
   isCpuThinking: boolean
+  seriesWinner: Player | null
+  targetWins: number
 }
 
 export default function StatusBar({
@@ -22,19 +24,28 @@ export default function StatusBar({
   mode,
   cpuPlayer,
   isCpuThinking,
+  seriesWinner,
+  targetWins,
 }: StatusBarProps) {
   let message: string
-  let variant: 'neutral' | 'win' | 'draw' | 'history' | 'cpu' = 'neutral'
+  let variant: 'neutral' | 'win' | 'draw' | 'history' | 'cpu' | 'series' = 'neutral'
 
-  if (isViewingHistory) {
+  if (seriesWinner) {
+    const label =
+      mode === 'cpu'
+        ? seriesWinner === cpuPlayer
+          ? `CPU wins the series!`
+          : `You win the series!`
+        : `${seriesWinner} wins the series!`
+    message = `${label} (First to ${targetWins})`
+    variant = 'series'
+  } else if (isViewingHistory) {
     message = viewingStep === 0 ? 'Game start' : `Viewing move #${viewingStep}`
     variant = 'history'
   } else if (winner) {
     message =
       mode === 'cpu'
-        ? winner === cpuPlayer
-          ? 'CPU wins!'
-          : 'You win!'
+        ? winner === cpuPlayer ? 'CPU wins!' : 'You win!'
         : `Winner: ${winner}`
     variant = 'win'
   } else if (isDraw) {
@@ -49,6 +60,7 @@ export default function StatusBar({
   }
 
   function renderIcon() {
+    if (seriesWinner) return <Crown size={18} strokeWidth={2.5} />
     if (winner) return <Trophy size={18} strokeWidth={2.5} />
     if (isDraw) return <Minus size={18} strokeWidth={2.5} />
     if (isViewingHistory) return <History size={18} strokeWidth={2} />

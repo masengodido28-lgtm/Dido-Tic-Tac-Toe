@@ -35,6 +35,10 @@ export interface GameState {
   nextStartingPlayer: Player
   /** Who started the current game (used by RESTART to replay same start) */
   currentStartingPlayer: Player
+  /** First to this many wins claims the series */
+  targetWins: number
+  /** Set when a player has claimed the series — locks the game */
+  seriesWinner: Player | null
 }
 
 export type GameAction =
@@ -44,3 +48,4 @@ export type GameAction =
   | { type: 'FULL_RESET' }
   | { type: 'JUMP_TO'; step: number }
   | { type: 'SET_MODE'; mode: GameMode }
+  | { type: 'SET_TARGET'; target: number }

@@ -48,6 +48,16 @@
   border-color: var(--border-mid);
 }
 
+/* Series winner — gold crown */
+.series {
+  background: linear-gradient(135deg, #2a1c04, #3d2a08);
+  color: #fbbf24;
+  border-color: #92400e;
+  box-shadow: 0 0 28px rgba(251, 191, 36, 0.3);
+  animation: seriesPulse 1.8s ease-in-out infinite;
+  font-size: 1rem;
+}
+
 .spin {
   animation: spin 1s linear infinite;
 }
@@ -55,6 +65,11 @@
 @keyframes pulse {
   0%, 100% { box-shadow: 0 0 20px rgba(134, 239, 172, 0.2); }
   50%       { box-shadow: 0 0 36px rgba(134, 239, 172, 0.45); }
+}
+
+@keyframes seriesPulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(251, 191, 36, 0.25); }
+  50%       { box-shadow: 0 0 40px rgba(251, 191, 36, 0.55); }
 }
 
 @keyframes spin {
@@ -69,4 +84,5 @@
     min-width: 0;
     width: 100%;
   }
+  .series { font-size: 0.82rem; }
 }

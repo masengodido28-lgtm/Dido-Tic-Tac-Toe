@@ -14,6 +14,7 @@ import type { GameMode } from './game/types'
 import styles from './App.module.css'
 
 const CPU_DELAY = 450
+const TARGET_OPTIONS = [3, 5, 7]
 
 export default function App() {
   const [state, dispatch] = useReducer(gameReducer, initialState)
@@ -31,6 +32,8 @@ export default function App() {
     mode,
     cpuPlayer,
     nextStartingPlayer,
+    targetWins,
+    seriesWinner,
   } = state
 
   const winningLine = getWinningLine(board)
@@ -46,13 +49,14 @@ export default function App() {
     root.style.setProperty('--o-color', theme.oColor)
   }, [theme])
 
-  // CPU auto-move
+  // CPU auto-move — suppressed when series is over
   useEffect(() => {
     if (
       mode !== 'cpu' ||
       currentPlayer !== cpuPlayer ||
       gameOver ||
-      isViewingHistory
+      isViewingHistory ||
+      seriesWinner !== null
     ) return
 
     setIsCpuThinking(true)
@@ -63,7 +67,7 @@ export default function App() {
     }, CPU_DELAY)
 
     return () => { if (cpuTimerRef.current) clearTimeout(cpuTimerRef.current) }
-  }, [board, currentPlayer, mode, cpuPlayer, gameOver, isViewingHistory])
+  }, [board, currentPlayer, mode, cpuPlayer, gameOver, isViewingHistory, seriesWinner])
 
   function clearCpuTimer() {
     setIsCpuThinking(false)
@@ -71,6 +75,7 @@ export default function App() {
   }
 
   function handleSquareClick(index: number) {
+    if (seriesWinner) return
     if (mode === 'cpu' && currentPlayer === cpuPlayer && !isViewingHistory) return
     dispatch({ type: 'MAKE_MOVE', index })
   }
@@ -100,6 +105,11 @@ export default function App() {
     dispatch({ type: 'SET_MODE', mode: newMode })
   }
 
+  function handleTargetChange(target: number) {
+    clearCpuTimer()
+    dispatch({ type: 'SET_TARGET', target })
+  }
+
   return (
     <div className={styles.app}>
       {/* Header */}
@@ -114,6 +124,24 @@ export default function App() {
         <div className={styles.controls}>
           <ModeSelector mode={mode} onChange={handleModeChange} />
           <ThemePicker activeId={theme.id} onChange={setTheme} />
+        </div>
+
+        {/* Race target picker */}
+        <div className={styles.targetRow}>
+          <span className={styles.targetLabel}>Race to:</span>
+          {TARGET_OPTIONS.map((n) => (
+            <button
+              key={n}
+              className={[
+                styles.targetBtn,
+                targetWins === n ? styles.targetActive : '',
+              ].join(' ')}
+              onClick={() => handleTargetChange(n)}
+              aria-pressed={targetWins === n}
+            >
+              {n}
+            </button>
+          ))}
         </div>
 
         <p className={styles.startInfo}>
@@ -143,12 +171,15 @@ export default function App() {
             mode={mode}
             cpuPlayer={cpuPlayer}
             isCpuThinking={isCpuThinking}
+            seriesWinner={seriesWinner}
+            targetWins={targetWins}
           />
 
           <Board
             board={board}
             winningLine={winningLine}
             gameOver={
+              seriesWinner !== null ||
               (gameOver && !isViewingHistory) ||
               (mode === 'cpu' && currentPlayer === cpuPlayer && !gameOver && !isViewingHistory)
             }
@@ -165,36 +196,49 @@ export default function App() {
                 Resume
               </button>
             )}
+            {/* Restart and New Game hidden when series is over — only Reset Score makes sense */}
+            {!seriesWinner && (
+              <>
+                <button
+                  className={[styles.btn, styles.btnRestart].join(' ')}
+                  onClick={handleRestart}
+                  title="Restart this game (same starting player, score kept)"
+                >
+                  <RotateCcw size={15} strokeWidth={2.5} />
+                  Restart
+                </button>
+                <button
+                  className={[styles.btn, styles.btnNewGame].join(' ')}
+                  onClick={handleNewGame}
+                  title="Next round (starting player alternates)"
+                >
+                  <RefreshCw size={15} strokeWidth={2.5} />
+                  New Game
+                </button>
+              </>
+            )}
             <button
-              className={[styles.btn, styles.btnRestart].join(' ')}
-              onClick={handleRestart}
-              title="Restart this game (same starting player, score kept)"
-            >
-              <RotateCcw size={15} strokeWidth={2.5} />
-              Restart
-            </button>
-            <button
-              className={[styles.btn, styles.btnNewGame].join(' ')}
-              onClick={handleNewGame}
-              title="New game (starting player alternates)"
-            >
-              <RefreshCw size={15} strokeWidth={2.5} />
-              New Game
-            </button>
-            <button
-              className={[styles.btn, styles.btnFullReset].join(' ')}
+              className={[
+                styles.btn,
+                styles.btnFullReset,
+                seriesWinner ? styles.btnFullResetHighlight : '',
+              ].join(' ')}
               onClick={handleFullReset}
               title="Reset score and restart from scratch"
             >
               <Trash2 size={15} strokeWidth={2.5} />
-              Reset Score
+              {seriesWinner ? 'Play Again' : 'Reset Score'}
             </button>
           </div>
         </section>
 
         {/* Right: scoreboard */}
         <aside className={styles.aside}>
-          <Scoreboard score={score} />
+          <Scoreboard
+            score={score}
+            targetWins={targetWins}
+            seriesWinner={seriesWinner}
+          />
         </aside>
       </main>
     </div>

@@ -22,14 +22,19 @@ export const initialState: GameState = {
   score: { X: 0, O: 0, draws: 0 },
   mode: 'pvp',
   cpuPlayer: 'O',
-  nextStartingPlayer: 'O', // after first game, O starts next
+  nextStartingPlayer: 'O',
   currentStartingPlayer: 'X',
+  targetWins: 3,
+  seriesWinner: null,
 }
 
 export function gameReducer(state: GameState, action: GameAction): GameState {
   switch (action.type) {
     case 'MAKE_MOVE': {
       const { index } = action
+
+      // Don't allow moves after the series is over
+      if (state.seriesWinner) return state
 
       const activeHistory = state.history.slice(0, state.stepIndex + 1)
       const currentEntry = activeHistory[activeHistory.length - 1]
@@ -60,6 +65,10 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       if (winner) nextScore[winner] += 1
       else if (isDraw) nextScore.draws += 1
 
+      // Check if this win clinches the series
+      const seriesWinner: Player | null =
+        winner && nextScore[winner] >= state.targetWins ? winner : null
+
       return {
         ...state,
         board: nextBoard,
@@ -69,6 +78,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         history: nextHistory,
         stepIndex: nextStep,
         score: nextScore,
+        seriesWinner,
       }
     }
 
@@ -87,8 +97,11 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       }
     }
 
-    // RESET: alternates starting player, keeps score
+    // RESET: new game round — alternates starting player, keeps score + series state
     case 'RESET': {
+      // Can't start a new round if series is over (must FULL_RESET)
+      if (state.seriesWinner) return state
+
       const startingPlayer = state.nextStartingPlayer
       const nextStartingPlayer: Player = startingPlayer === 'X' ? 'O' : 'X'
 
@@ -105,10 +118,11 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       }
     }
 
-    // RESTART: same starting player as this game, score untouched
+    // RESTART: redo current round — same starting player, score untouched
     case 'RESTART': {
-      const startingPlayer = state.currentStartingPlayer
+      if (state.seriesWinner) return state
 
+      const startingPlayer = state.currentStartingPlayer
       return {
         ...state,
         board: Array(9).fill(null),
@@ -117,7 +131,6 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         isDraw: false,
         history: makeInitialHistory(startingPlayer),
         stepIndex: 0,
-        // nextStartingPlayer unchanged — New Game still alternates normally after
       }
     }
 
@@ -125,15 +138,26 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       return {
         ...initialState,
         mode: action.mode,
+        targetWins: state.targetWins,
         score: { X: 0, O: 0, draws: 0 },
       }
     }
 
-    // FULL_RESET: wipe score + board, start fresh from X
+    // FULL_RESET: wipe everything — score, series, board — back to scratch
     case 'FULL_RESET': {
       return {
         ...initialState,
         mode: state.mode,
+        targetWins: state.targetWins,
+      }
+    }
+
+    // SET_TARGET: change race length — implicitly resets the series
+    case 'SET_TARGET': {
+      return {
+        ...initialState,
+        mode: state.mode,
+        targetWins: action.target,
       }
     }
 
